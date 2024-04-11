@@ -52,6 +52,10 @@
             </a>
         </div>
 
+        {{# output.url_crm}}
+ <a href="{{crmurl}}" class="btn btn-light ml-3 {{crmshow}}">Back to CRM</a>
+        {{/ output.url_crm}}
+
         {{#hasrecent}}
             <div class="nav-item dropdown outer d-none" id="recentCourses">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)" data-animation="scale-up" aria-expanded="true" role="button">{{#str}}recent, theme_remui{{/str}}</a>

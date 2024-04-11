@@ -44,7 +44,8 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  2012 Bas Brands, www.basbrands.nl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class core_renderer extends \core_renderer {
+class core_renderer extends \core_renderer
+{
 
     /**
      * Theme configuration
@@ -58,7 +59,8 @@ class core_renderer extends \core_renderer {
      * @param moodle_page $page the page we are doing output for.
      * @param string $target one of rendering target constants
      */
-    public function __construct(moodle_page $page, $target) {
+    public function __construct(moodle_page $page, $target)
+    {
         parent::__construct($page, $target);
         $this->themeconfig = array(\theme_config::load('remui'));
     }
@@ -67,7 +69,8 @@ class core_renderer extends \core_renderer {
      * Get theme configuration
      * @return object Theme configuration
      */
-    public function get_theme_config() {
+    public function get_theme_config()
+    {
         return $this->themeconfig;
     }
 
@@ -77,7 +80,8 @@ class core_renderer extends \core_renderer {
      * @param action_menu $menu
      * @return string HTML
      */
-    public function render_action_menu(action_menu $menu) {
+    public function render_action_menu(action_menu $menu)
+    {
         if ($menu->is_empty()) {
             return '';
         }
@@ -94,7 +98,8 @@ class core_renderer extends \core_renderer {
      *
      * @return HTML for license notice.
      */
-    public function show_license_notice() {
+    public function show_license_notice()
+    {
         // Get license data from license controller.
         $lcontroller = new \theme_remui\controller\LicenseController();
         $getlidatafromdb = $lcontroller->get_data_from_db();
@@ -104,7 +109,7 @@ class core_renderer extends \core_renderer {
             if ('available' != $getlidatafromdb) {
                 $classes[] = 'bg-danger';
                 if (is_siteadmin()) {
-                    $content .= '<strong>'.get_string('licensenotactiveadmin', 'theme_remui').'</strong>';
+                    $content .= '<strong>' . get_string('licensenotactiveadmin', 'theme_remui') . '</strong>';
                 } else {
                     $content .= get_string('licensenotactive', 'theme_remui');
                 }
@@ -116,7 +121,7 @@ class core_renderer extends \core_renderer {
                     $content .= get_string('licensekeyactivated', 'theme_remui');
                 } else {
                     // Show update notice if license is active and update is available.
-                    $available  = \theme_remui\controller\RemUIController::check_remui_update();
+                    $available = \theme_remui\controller\RemUIController::check_remui_update();
                     if (is_siteadmin() && $available == 'available') {
                         $classes[] = 'update-nag bg-info moodle-has-zindex';
                         $url = new moodle_url(
@@ -131,8 +136,8 @@ class core_renderer extends \core_renderer {
                 }
             }
             if ($content != '') {
-               // $content .= '<button type="button" class="close text-white" data-dismiss="alert" aria-hidden="true">×</button>';
-              //  return html_writer::tag('div', $content, array('class' => implode(' ', $classes)));
+                // $content .= '<button type="button" class="close text-white" data-dismiss="alert" aria-hidden="true">×</button>';
+                //  return html_writer::tag('div', $content, array('class' => implode(' ', $classes)));
             }
         }
         return '';
@@ -144,11 +149,12 @@ class core_renderer extends \core_renderer {
      *
      * @return string HTML fragment.
      */
-    public function standard_after_main_region_html() {
+    public function standard_after_main_region_html()
+    {
         global $CFG;
         $output = '';
         if ($this->page->pagelayout !== 'embedded' && !empty($CFG->additionalhtmlbottomofbody)) {
-            $output .= "\n".$CFG->additionalhtmlbottomofbody;
+            $output .= "\n" . $CFG->additionalhtmlbottomofbody;
         }
 
         // Merge messaging panel into right sidebar or not.
@@ -159,7 +165,7 @@ class core_renderer extends \core_renderer {
         foreach (\core_component::get_core_subsystems() as $name => $path) {
             if ($path) {
                 // Remui, because messages are in sidebar, so skip here.
-                if ($mergemessagingsidebar  && $name == 'message') {
+                if ($mergemessagingsidebar && $name == 'message') {
                     continue;
                 }
                 $output .= component_callback($name, 'standard_after_main_region_html', [], '');
@@ -185,7 +191,8 @@ class core_renderer extends \core_renderer {
      *
      * @return bool
      */
-    public function should_display_logo() {
+    public function should_display_logo()
+    {
         global $SITE;
 
         $customizer = \theme_remui\customizer\customizer::instance();
@@ -208,15 +215,30 @@ class core_renderer extends \core_renderer {
         }
 
         // if ($logoorsitename == 'logo') {
-            // $context['islogo'] = true;
-            $context['logourl'] = $logo;
-            $context['logominiurl'] = $logomini;
+        // $context['islogo'] = true;
+        $context['logourl'] = $logo;
+        $context['logominiurl'] = $logomini;
         // } else {
-            // $context['isiconsitename'] = true;
-            $customizer = \theme_remui\customizer\customizer::instance();
-            $context['siteicon'] = $customizer->get_config('siteicon');
-            $context['sitename'] = format_string($SITE->shortname);
+        // $context['isiconsitename'] = true;
+        $customizer = \theme_remui\customizer\customizer::instance();
+        $context['siteicon'] = $customizer->get_config('siteicon');
+        $context['sitename'] = format_string($SITE->shortname);
         // }
+        return $context;
+    }
+
+    public function url_crm()
+    {
+        $crmlink = 'link______________________';
+        $dnone = 'd-none';
+        $dshow = 'd-block';
+        if (!isloggedin()) {
+            $context['crmshow'] = $dnone;
+        } else {
+            $context['crmshow'] = $dshow;
+        }
+
+        $context['crmurl'] = $crmlink;
         return $context;
     }
 
@@ -226,7 +248,8 @@ class core_renderer extends \core_renderer {
      * @param \core_auth\output\login $form The renderable.
      * @return string
      */
-    public function render_login(\core_auth\output\login $form) {
+    public function render_login(\core_auth\output\login $form)
+    {
         global $CFG, $SITE;
         $context = $form->export_for_template($this);
 
@@ -245,8 +268,11 @@ class core_renderer extends \core_renderer {
         }
 
         $context->logourl = $url;
-        $context->sitename = format_string($SITE->fullname, true,
-            ['context' => \context_course::instance(SITEID), "escape" => false]);
+        $context->sitename = format_string(
+            $SITE->fullname,
+            true,
+            ['context' => \context_course::instance(SITEID), "escape" => false]
+        );
         $context->siteicon = $customizer->get_config('siteicon');
         $context->loginpage_context = $this->should_display_logo();
 
@@ -272,7 +298,8 @@ class core_renderer extends \core_renderer {
      * @param mform $form
      * @return string
      */
-    public function render_login_signup_form($form) {
+    public function render_login_signup_form($form)
+    {
         global $SITE;
 
         $context = $form->export_for_template($this);
@@ -284,7 +311,8 @@ class core_renderer extends \core_renderer {
         $context['sitename'] = format_string(
             $SITE->fullname,
             true,
-            ['context' => context_course::instance(SITEID), "escape" => false]);
+            ['context' => context_course::instance(SITEID), "escape" => false]
+        );
 
         // Modify form html.
         $context['formhtml'] = str_replace(
@@ -309,10 +337,11 @@ class core_renderer extends \core_renderer {
      * @param bool $withlinks true if a dropdown should be built.
      * @return string HTML fragment.
      */
-    public function user_menu($user = null, $withlinks = null) {
+    public function user_menu($user = null, $withlinks = null)
+    {
         global $USER, $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
-        require_once($CFG->dirroot . '/lib/moodlelib.php');
+        require_once ($CFG->dirroot . '/user/lib.php');
+        require_once ($CFG->dirroot . '/lib/moodlelib.php');
 
         if (is_null($user)) {
             $user = $USER;
@@ -330,9 +359,9 @@ class core_renderer extends \core_renderer {
         if (!isloggedin()) {
             $otherclasses = ' no-bghover';
         }
-        $usermenuclasses = array('class' => 'usermenu nav-item dropdown user-menu login-menu'.$otherclasses);
+        $usermenuclasses = array('class' => 'usermenu nav-item dropdown user-menu login-menu' . $otherclasses);
         if (!$withlinks) {
-            $usermenuclasses = array('class' => ' nav-item dropdown user-menu login-menu withoutlinks'.$otherclasses);
+            $usermenuclasses = array('class' => ' nav-item dropdown user-menu login-menu withoutlinks' . $otherclasses);
         }
 
         $returnstr = "";
@@ -354,13 +383,13 @@ class core_renderer extends \core_renderer {
 
         $logintoken = \core\session\manager::get_login_token();
         $tokenhtml = '<div class="form-group">
-                <input type="hidden" name="logintoken" value="'.$logintoken.'">
+                <input type="hidden" name="logintoken" value="' . $logintoken . '">
             </div>';
 
         // Sign in popup.
         $signinformhtml = '<div class="dropdown-menu  dropdown-menu-right loginddown p-15" role="menu"
                     data-region="popover-region-container">
-                    <form class="mb-0" action="'.get_login_url().'" method="post" id="login">
+                    <form class="mb-0" action="' . get_login_url() . '" method="post" id="login">
                         
 
 <input type="radio" id="internal" name="typeuser" value="internal" checked>
@@ -370,26 +399,26 @@ External<br>
 
 
                         <div class="form-group">
-                            <label for="username" class="sr-only">'.get_string('username').'</label>
+                            <label for="username" class="sr-only">' . get_string('username') . '</label>
                             <input type="text" class="form-control" id="username" name="username"
-                            placeholder="'.get_string('username').'">
+                            placeholder="' . get_string('username') . '">
                         </div>
 
                         <div class="form-group">
-                            <label for="password" class="sr-only">'.get_string('password').'</label>
+                            <label for="password" class="sr-only">' . get_string('password') . '</label>
                             <input type="password" name="password" id="password" value=""
-                            class="form-control"placeholder='.get_string('password').'>
+                            class="form-control"placeholder=' . get_string('password') . '>
                         </div>
-                        '.$tokenhtml.'
+                        ' . $tokenhtml . '
                         <div class="form-group clearfix">
                             <div class="checkbox-custom checkbox-inline checkbox-primary float-left rememberpass">
                                 <input type="checkbox" id="rememberusername" name="rememberusername" value="1" />
-                                <label for="rememberusername">'.get_string('rememberusername', 'admin').'</label>
+                                <label for="rememberusername">' . get_string('rememberusername', 'admin') . '</label>
                             </div>
-                            <a class="float-right" href="'.$forgotpasswordurl.'">'.get_string("forgotpassword", "theme_remui").'</a>
+                            <a class="float-right" href="' . $forgotpasswordurl . '">' . get_string("forgotpassword", "theme_remui") . '</a>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block" id="loginbtn">'.get_string('login').'</button>
+                        <button type="submit" class="btn btn-primary btn-block" id="loginbtn">' . get_string('login') . '</button>
                     </form>';
 
         $authsequence = get_enabled_auth_plugins(true); // Get all auths, in sequence.
@@ -405,7 +434,7 @@ External<br>
             $signinformhtml .= '<div class="button-group ">';
             foreach ($potentialidps as $idp) {
                 $signinformhtml .= '<a class="btn btn-icon" href="' . $idp['url']->out()
-                . '" title="' . s($idp['name']) . ' Login">';
+                    . '" title="' . s($idp['name']) . ' Login">';
                 if (!empty($idp['iconurl'])) {
                     $signinformhtml .= '<img src="' . s($idp['iconurl']) . '" width="24" height="24" />';
                 }
@@ -420,11 +449,11 @@ External<br>
         if (!isloggedin()) {
             $returnstr = '';
             if (!$loginpage) {
-                $returnstr = '<a href="'.$loginurl.'" class="nav-link" '.$loginurldatatoggle.' data-animation="scale-up">
-                <div class="remuiicon"><i class="icon fa fa-user"></i></div>'.get_string('login').'</a>';
+                $returnstr = '<a href="' . $loginurl . '" class="nav-link" ' . $loginurldatatoggle . ' data-animation="scale-up">
+                <div class="remuiicon"><i class="icon fa fa-user"></i></div>' . get_string('login') . '</a>';
 
                 if ($logindropdown) {
-                    $returnstr  .= $signinformhtml;
+                    $returnstr .= $signinformhtml;
                 }
             }
 
@@ -435,11 +464,11 @@ External<br>
         if (isguestuser()) {
             $returnstr = '';
             if (!$loginpage && $withlinks) {
-                $returnstr = '<a href="'.$loginurl.'" class="nav-link" '.$loginurldatatoggle.' data-animation="scale-up">
-                <i class="icon fa fa-user"></i>'.get_string('login').'</a>';
+                $returnstr = '<a href="' . $loginurl . '" class="nav-link" ' . $loginurldatatoggle . ' data-animation="scale-up">
+                <i class="icon fa fa-user"></i>' . get_string('login') . '</a>';
 
                 if ($logindropdown) {
-                    $returnstr  .= $signinformhtml;
+                    $returnstr .= $signinformhtml;
                 }
             }
             return html_writer::tag('div', $returnstr, $usermenuclasses);
@@ -478,7 +507,7 @@ External<br>
         if (!empty($opts->metadata['asotherrole'])) {
             $role = core_text::strtolower(preg_replace('#[ ]+#', '-', trim($opts->metadata['rolename'])));
             $usertextcontents .= html_writer::span(
-                ' ('. $opts->metadata['rolename'] .')',
+                ' (' . $opts->metadata['rolename'] . ')',
                 'meta text-uppercase font-size-12 role role-' . $role
             );
         }
@@ -512,16 +541,16 @@ External<br>
         $usermenu = '';
         $usermenu = '';
         $totalpoints = 0;
-        $showpoints = get_config('block_xp','showpointsonheader');
+        $showpoints = get_config('block_xp', 'showpointsonheader');
         $totalpoints = '';
-        if($showpoints && !is_siteadmin()){
-            $totalpoints ='| <span class="rewardpoints"><i class="fa fa-trophy" style="color:#FADB56;" ></i>&nbsp;&nbsp;'.$this->get_user_xp_points().'</span>';
+        if ($showpoints && !is_siteadmin()) {
+            $totalpoints = '| <span class="rewardpoints"><i class="fa fa-trophy" style="color:#FADB56;" ></i>&nbsp;&nbsp;' . $this->get_user_xp_points() . '</span>';
         }
         $usermenu .= '<a class="nav-link navbar-avatar" data-toggle="dropdown" href="#"
             aria-expanded="false" data-animation="scale-up" role="button">
-            <span class="username pr-1">'.$usertextcontents.'</span>
+            <span class="username pr-1">' . $usertextcontents . '</span>
             <span class="avatar avatar-online current">
-            '.$opts->metadata['useravatar'].'
+            ' . $opts->metadata['useravatar'] . '
             <i style="border-color: white;"></i>
             </span>
         </a>';
@@ -555,7 +584,7 @@ External<br>
                         }
 
                         $icon = $this->pix_icon($pix->pix, '', 'moodle', $pix->attributes);
-                        $usermenu .= '<a class="dropdown-item" href="'.$value->url.'" role="menuitem">'.$icon.$value->title.'</a>';
+                        $usermenu .= '<a class="dropdown-item" href="' . $value->url . '" role="menuitem">' . $icon . $value->title . '</a>';
                         break;
                 }
 
@@ -578,7 +607,8 @@ External<br>
      *
      * @return string HTML fragment.
      */
-    public function standard_head_html() {
+    public function standard_head_html()
+    {
         global $SITE, $PAGE;
 
         $output = parent::standard_head_html();
@@ -605,13 +635,13 @@ External<br>
         if (!empty($gatrackingcode)) {
             $output .= "<!-- Global site tag (gtag.js) - Google Analytics -->";
             $output .= "<script async src='https://www.googletagmanager.com/gtag/js?id=";
-            $output .= $gatrackingcode."'></script>
+            $output .= $gatrackingcode . "'></script>
             <script>
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
 
-              gtag('config', '".$gatrackingcode."');
+              gtag('config', '" . $gatrackingcode . "');
             </script><!-- Google Analytics -->";
         }
         return $output;
@@ -620,7 +650,8 @@ External<br>
     /**
      * Returns the url of the custom favicon.
      */
-    public function favicon() {
+    public function favicon()
+    {
         $favicon = \theme_remui\toolbox::setting_file_url('faviconurl', 'faviconurl');
         if (empty($favicon)) {
             return \theme_remui\toolbox::image_url('favicon', 'theme');
@@ -635,7 +666,8 @@ External<br>
      * @param context_header $contextheader Header bar object.
      * @return string HTML for the header bar.
      */
-    protected function render_context_header(\context_header $contextheader) {
+    protected function render_context_header(\context_header $contextheader)
+    {
         global $PAGE;
 
         // All the html stuff goes here.
@@ -647,7 +679,7 @@ External<br>
 
         // $contextheader->headinglevel, before it was used instead $heading_level
         $heading_level = 3;
-	// Image data.
+        // Image data.
         if (isset($contextheader->imagedata)) {
             // Header specific image.
             $html .= html_writer::div($contextheader->imagedata, 'page-header-image d-none');
@@ -693,17 +725,25 @@ External<br>
                         \core_message\helper::togglecontact_requirejs();
                     }
 
-                    $image = $this->pix_icon($button['formattedimage'], $button['title'], 'moodle', array(
-                        'class' => 'iconsize-button',
-                        'role' => 'presentation'
-                    ));
+                    $image = $this->pix_icon(
+                        $button['formattedimage'],
+                        $button['title'],
+                        'moodle',
+                        array(
+                            'class' => 'iconsize-button',
+                            'role' => 'presentation'
+                        )
+                    );
 
-                    $image = html_writer::span($image.'&nbsp;&nbsp;'.$button['title']);
+                    $image = html_writer::span($image . '&nbsp;&nbsp;' . $button['title']);
                 } else {
-                    $image = html_writer::empty_tag('img', array(
-                        'src' => $button['formattedimage'],
-                        'role' => 'presentation'
-                    ));
+                    $image = html_writer::empty_tag(
+                        'img',
+                        array(
+                            'src' => $button['formattedimage'],
+                            'role' => 'presentation'
+                        )
+                    );
                 }
 
                 $button['linkattributes']['class'] .= ' btn-secondary ';
@@ -724,25 +764,25 @@ External<br>
 
         if ($this->page->user_is_editing() && is_plugin_available('local_edwiserpagebuilder')) {
             $htmltemp .= '<div class="singlebutton"><button type="submit" class="btn btn-secondary" id="epbaddblockbutton" title="Add a block button">';
-            $htmltemp .= get_string('addblock', 'core').'</button></div>';
+            $htmltemp .= get_string('addblock', 'core') . '</button></div>';
         }
         if (!$overlay) {
             $html .= $htmltemp;
         }
 
-	// Extra Dropdown button, available on content bank page
-	// Do not move this code anywhere else in the function.
-	// This code must be in between !overlay and $overlay condition
-	// Here our setting for merging the action buttons in dropdown is satisfied.
-	$headeractionbuttons = '';
+        // Extra Dropdown button, available on content bank page
+        // Do not move this code anywhere else in the function.
+        // This code must be in between !overlay and $overlay condition
+        // Here our setting for merging the action buttons in dropdown is satisfied.
+        $headeractionbuttons = '';
         $headeractionbuttons .= '<div class="header-actions-container flex-shrink-0" data-region="header-actions-container">';
         foreach ($this->page->get_header_actions() as $key => $value) {
-            $headeractionbuttons .= '<div class="header-action ml-2">' .$value. '</div>';
+            $headeractionbuttons .= '<div class="header-action ml-2">' . $value . '</div>';
 
         }
         $headeractionbuttons .= '</div>';
 
-	$html .= $headeractionbuttons;
+        $html .= $headeractionbuttons;
 
         // Show overlay menu icon if overlay is enabled and there are menu items (in html temp).
         if ($overlay) {
@@ -766,7 +806,8 @@ External<br>
      *
      * @return string HTML to display the main header.
      */
-    public function full_header() {
+    public function full_header()
+    {
         $html = html_writer::start_tag('header', array('id' => 'page-header', 'class' => 'row'));
         $html .= html_writer::start_tag('div', array('class' => 'col-12'));
         $html .= html_writer::start_tag('div', array('class' => 'card'));
@@ -784,7 +825,8 @@ External<br>
      *
      * @return string the navigation HTML.
      */
-    public function activity_navigation() {
+    public function activity_navigation()
+    {
 
         $activitynavenable = get_config('theme_remui', 'activitynextpreviousbutton');
         if (!$activitynavenable) {
@@ -793,8 +835,10 @@ External<br>
 
         // First we should check if we want to add navigation.
         $context = $this->page->context;
-        if (($this->page->pagelayout !== 'incourse' && $this->page->pagelayout !== 'frametop') ||
-        $context->contextlevel != CONTEXT_MODULE) {
+        if (
+            ($this->page->pagelayout !== 'incourse' && $this->page->pagelayout !== 'frametop') ||
+            $context->contextlevel != CONTEXT_MODULE
+        ) {
             return '';
         }
 
@@ -883,7 +927,8 @@ External<br>
      *
      * @return string Site announcement HTML
      */
-    public function render_site_announcement() {
+    public function render_site_announcement()
+    {
         $enableannouncement = \theme_remui\toolbox::get_setting('enableannouncement');
         $announcement = '';
         if ($enableannouncement && !get_user_preferences('remui_dismised_announcement')) {
@@ -906,14 +951,15 @@ External<br>
         }
         return $announcement;
     }
-    
+
     /**
      * Returns a search box.
      *
      * @param  string $id     The search box wrapper div id, defaults to an autogenerated one.
      * @return string         HTML with the search form hidden by default.
      */
-    public function search_box($id = false) {
+    public function search_box($id = false)
+    {
         global $CFG;
 
         // Accessing $CFG directly as using \core_search::is_global_search_enabled would
@@ -928,10 +974,11 @@ External<br>
             'hiddenfields' => (object) ['name' => 'context', 'value' => $this->page->context->id],
             'inputname' => 'q',
             'searchstring' => get_string('search'),
-            ];
+        ];
         return $this->render_from_template('core/search_input_navbar', $data);
     }
-    function settings_btn() {
+    function settings_btn()
+    {
         global $PAGE, $COURSE, $USER;
         $html = '';
 
@@ -951,29 +998,31 @@ External<br>
 
         return $html;
     }
-    public function get_user_xp_points($userid = 0){
+    public function get_user_xp_points($userid = 0)
+    {
         global $USER, $DB;
-        if(empty($userid)){
+        if (empty($userid)) {
             $userid = $USER->id;
         }
-        
-        $userxp = $DB->get_record('block_xp',array('userid'=>$userid));
-        if($userxp){
+
+        $userxp = $DB->get_record('block_xp', array('userid' => $userid));
+        if ($userxp) {
             return $userxp->xp;
         }
         return 0;
     }
 
-    public function social_icon(){
+    public function social_icon()
+    {
 
         if (!isloggedin()) {
 
             $loginurl = get_login_url();
             $returnstr = "<a href=\"$loginurl\"><label>Log In <i class='fa fa-sign-in' style='font-size: 25px;' aria-hidden='true'></i></label></a>";
             $loginlink = html_writer::span(
-                    $returnstr,
-                    'login'
-                );
+                $returnstr,
+                'login'
+            );
             $output = '<style>
                         body{
                             padding-top: unset!important;
@@ -1039,7 +1088,7 @@ External<br>
                                 </a>
                             </div>
                             <div class="navbar-login-wrap mx-4 my-auto">
-                                '.$loginlink.'
+                                ' . $loginlink . '
                             </div>
                         </div>
                     </nav>';
@@ -1047,7 +1096,8 @@ External<br>
             return $output;
         }
     }
-    public function login_page_menu(){
+    public function login_page_menu()
+    {
         global $CFG;
 
         if (!isloggedin()) {
@@ -1063,12 +1113,12 @@ External<br>
                         }
                         </style>
                         <li class="nav-item">
-                            <a href="'.$CFG->wwwroot.'" class="navbar-menu nav-link" >
+                            <a href="' . $CFG->wwwroot . '" class="navbar-menu nav-link" >
                                 HOME
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="'.$CFG->wwwroot.'" class="navbar-menu nav-link" >
+                            <a href="' . $CFG->wwwroot . '" class="navbar-menu nav-link" >
                                 ABOUT US
                             </a>
                         </li>
@@ -1078,7 +1128,7 @@ External<br>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="'.$CFG->wwwroot.'" class="navbar-menu nav-link" >
+                            <a href="' . $CFG->wwwroot . '" class="navbar-menu nav-link" >
                                 CONTACT US
                             </a>
                         </li>';
@@ -1086,22 +1136,23 @@ External<br>
         }
     }
 
-    public function cart_icon(){
+    public function cart_icon()
+    {
         global $CFG, $PAGE;
-        require_once($CFG->dirroot.'/local/products/lib.php');
+        require_once ($CFG->dirroot . '/local/products/lib.php');
         $PAGE->requires->js_call_amd('theme_remui/custom', 'init');
         $PAGE->requires->js_call_amd('local_products/products', 'init');
 
         $productsincart = get_products_details_in_cart();
         $count = '<span class="cart-count-badge" >';
-        if(count($productsincart) > 0){
+        if (count($productsincart) > 0) {
             $count .= count($productsincart);
         } else {
             $count .= 0;
         }
         $count .= '</span>';
-        if(!is_siteadmin()){
-        $output = '<style>
+        if (!is_siteadmin()) {
+            $output = '<style>
                         .cart-notification .cart-count-badge {
                             position: relative;
                             top: -10px;
@@ -1115,9 +1166,9 @@ External<br>
                         }
                     </style>
                     <div class="popover-region">
-                        <a href="'.$CFG->wwwroot.'/local/products/cart.php" class=" nav-link cart-notification" >
+                        <a href="' . $CFG->wwwroot . '/local/products/cart.php" class=" nav-link cart-notification" >
                             <i class="fa fa-shopping-cart" style="font-size:18px"></i>
-                            '.$count.'
+                            ' . $count . '
                         </a>
                     </div>';
         }
