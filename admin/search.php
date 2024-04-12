@@ -2,8 +2,8 @@
 
 // searches for admin settings
 
-require_once('../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once ('../config.php');
+require_once ($CFG->libdir . '/adminlib.php');
 
 redirect_if_major_upgrade_required();
 
@@ -31,7 +31,7 @@ $PAGE->set_heading(get_string('administrationsite')); // Has to be after setup s
 $adminroot = admin_get_root(); // need all settings here
 $adminroot->search = $query; // So we can reference it in search boxes later in this invocation
 $statusmsg = '';
-$errormsg  = '';
+$errormsg = '';
 $focus = '';
 
 // now we'll deal with the case that the admin has submitted the form with changed settings
@@ -79,15 +79,20 @@ if ($query && $hassiteconfig) {
 }
 
 if ($showsettingslinks) {
+    // $node = $PAGE->settingsnav->find('root', navigation_node::TYPE_SITE_ADMIN);
+    // if ($node) {
+    //     $secondarynavigation = false;
+    //     if ($PAGE->has_secondary_navigation()) {
+    //         $moremenu = new \core\navigation\output\more_menu($PAGE->secondarynav, 'nav-tabs', true, true);
+    //         $secondarynavigation = $moremenu->export_for_template($OUTPUT);
+    //     }
+    //     echo $OUTPUT->render_from_template('core/settings_link_page',
+    //         ['node' => $node, 'secondarynavigation' => $secondarynavigation]);
+    // }
+
     $node = $PAGE->settingsnav->find('root', navigation_node::TYPE_SITE_ADMIN);
     if ($node) {
-        $secondarynavigation = false;
-        if ($PAGE->has_secondary_navigation()) {
-            $moremenu = new \core\navigation\output\more_menu($PAGE->secondarynav, 'nav-tabs', true, true);
-            $secondarynavigation = $moremenu->export_for_template($OUTPUT);
-        }
-        echo $OUTPUT->render_from_template('core/settings_link_page',
-            ['node' => $node, 'secondarynavigation' => $secondarynavigation]);
+        echo $OUTPUT->render_from_template('core/settings_link_page', ['node' => $node]);
     }
 }
 

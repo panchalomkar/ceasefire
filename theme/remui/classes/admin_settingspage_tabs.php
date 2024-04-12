@@ -1,4 +1,6 @@
 <?php
+
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,7 +32,8 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2016 Ryan Wyllie
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class theme_remui_admin_settingspage_tabs extends admin_settingpage {
+class theme_remui_admin_settingspage_tabs extends admin_settingpage
+{
 
     /** @var The tabs */
     protected $tabs = array();
@@ -40,7 +43,8 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
      * @param admin_settingpage $tab A tab.
      * @return bool Tab adding status
      */
-    public function add_tab(admin_settingpage $tab) {
+    public function add_tab(admin_settingpage $tab)
+    {
         foreach ($tab->settings as $setting) {
             $this->settings->{$setting->name} = $setting;
         }
@@ -53,7 +57,8 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
      * @param admin_settingpage $tab Tab item
      * @return bool Tab adding status
      */
-    public function add($tab) {
+    public function add($tab)
+    {
         return $this->add_tab($tab);
     }
 
@@ -62,7 +67,8 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
      *
      * @return array
      */
-    public function get_tabs() {
+    public function get_tabs()
+    {
         return $this->tabs;
     }
 
@@ -71,7 +77,8 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
      *
      * @return string
      */
-    public function output_html() {
+    public function output_html()
+    {
         global $OUTPUT, $CFG;
 
         $activetab = optional_param('activetab', get_config('theme_remui', 'activetab'), PARAM_ALPHA);
@@ -104,7 +111,7 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
         $pluginman = \core_plugin_manager::instance();
         if (array_key_exists("edwisersiteimporter", $pluginman->get_installed_plugins('local'))) {
             ob_start();
-            include_once($CFG->dirroot . '/local/edwisersiteimporter/index.php');
+            include_once ($CFG->dirroot . '/local/edwisersiteimporter/index.php');
             $importer = ob_get_clean();
         } else {
             $importer = get_string('importer-missing', 'theme_remui');
@@ -118,6 +125,7 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
             'active' => $activetab == 'edwisersiteimporter',
             'customclass' => 'remuitab'
         );
+
 
         // Announcements tab content.
         // ob_start();
@@ -135,9 +143,14 @@ class theme_remui_admin_settingspage_tabs extends admin_settingpage {
         if (empty($context['tabs'])) {
             return '';
         }
-
-        return $OUTPUT->render_from_template('theme_remui/admin_setting_tabs', $context);
+        echo "this is actisladkfjasdlfkjaj" . $activetab;
+        $OUTPUT->render_from_template('theme_remui/admin_setting_tabs', $context);
     }
 
 }
+
+
+
+
+
 

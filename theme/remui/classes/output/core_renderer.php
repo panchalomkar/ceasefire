@@ -582,9 +582,14 @@ External<br>
                                 array('class' => 'iconsmall')
                             ) . $value->title;
                         }
-
-                        $icon = $this->pix_icon($pix->pix, '', 'moodle', $pix->attributes);
-                        $usermenu .= '<a class="dropdown-item" href="' . $value->url . '" role="menuitem">' . $icon . $value->title . '</a>';
+                        $puserid = $USER->id;
+                        if ($value->title == "Profile") {
+                            $icon = $this->pix_icon($pix->pix, '', 'moodle', $pix->attributes);
+                            $usermenu .= '<a class="dropdown-item" href="' . $value->url . '?id=' . $puserid . '" role="menuitem">' . $icon . $value->title . '</a>';
+                        } else {
+                            $icon = $this->pix_icon($pix->pix, '', 'moodle', $pix->attributes);
+                            $usermenu .= '<a class="dropdown-item" href="' . $value->url . '" role="menuitem">' . $icon . $value->title . '</a>';
+                        }
                         break;
                 }
 
